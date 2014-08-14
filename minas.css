@@ -1,0 +1,38 @@
+/*body{text-align: center;}*/
+::selection{background: transparent;}
+
+div{box-sizing: border-box;}
+#jugar.oculto{display: none;}
+
+#tablero{
+	border : 3px solid #BBB;
+	display: inline-block;
+	padding: 0.5em;
+}
+	#tablero > div > div{
+		background : #EEE; 
+		border     : 1px solid #CCC;
+		cursor     : pointer;
+		display    : inline-block;
+		height     : 3em;
+		line-height: 3em;
+		margin     : 2px;
+		overflow   : hidden;
+		text-align : center;
+		width      : 3em;
+	}
+		#tablero > div > div.destapado{
+			background: #FFF;
+		}
+		#tablero > div > div.explosion{
+			background: url('images/explosion-32.png') no-repeat center #000;
+		}
+		#tablero > div > div.mina{
+			background: url('images/skull-32.png') no-repeat center #CCC;
+		}
+		#tablero > div > div.mark{
+			background: url('images/mark-24.png') no-repeat center #EEE;
+			}
+			#tablero > div > div.mina.mark{
+				background: url('images/skull-32.png') no-repeat 20% 80%, url('images/mark-24.png') no-repeat top right #CCC;
+			}

@@ -150,6 +150,7 @@ function destapaCasilla (x, y) {
 				if ( x - 1 > -1 ) {
 					if ( y - 1 > -1 ) {
 						if ( tablero[x - 1][y - 1] != 'mina'
+							&& tablero[x - 1][y - 1] > 0
 							&& !document.getElementById('cell' + (x - 1) + (y - 1)).classList.contains('mark') ) {
 								destapaCasilla(x - 1, y - 1);
 						}
@@ -160,6 +161,7 @@ function destapaCasilla (x, y) {
 						}
 					if ( y + 1 < totalColumnas ) {
 						if ( tablero[x - 1][y + 1] != 'mina'
+							&& tablero[x - 1][y + 1] > 0
 							&& !document.getElementById('cell' + (x - 1) + (y + 1)).classList.contains('mark') ) {
 								destapaCasilla(x - 1, y + 1);
 						}
@@ -182,7 +184,8 @@ function destapaCasilla (x, y) {
 					if ( y - 1 > -1
 						&& !document.getElementById('cell' + (x + 1) + (y - 1)).classList.contains('destapado')
 						&& !document.getElementById('cell' + (x + 1) + (y - 1)).classList.contains('mark') ){
-							if ( tablero[x + 1][y - 1] != 'mina' ) {
+							if ( tablero[x + 1][y - 1] != 'mina'
+								&& tablero[x + 1][y - 1] > 0 ) {
 								destapaCasilla(x + 1, y - 1);
 							}
 					}
@@ -194,7 +197,8 @@ function destapaCasilla (x, y) {
 					if ( y + 1 < totalColumnas
 						&& !document.getElementById('cell' + (x + 1) + (y + 1)).classList.contains('destapado')
 						&& !document.getElementById('cell' + (x + 1) + (y + 1)).classList.contains('mark') ){
-							if ( tablero[x + 1][y + 1] != 'mina' ) {
+							if ( tablero[x + 1][y + 1] != 'mina'
+								&& tablero[x + 1][y + 1] > 0 ) {
 								destapaCasilla(x + 1, y + 1);
 							}
 					}
@@ -240,12 +244,12 @@ function recopilaDatos () {
 	document.getElementById('mensaje').innerHTML = '';
 	delay, totalCasillas, casillasDestapadas = 0;
 
-	xRand = prompt( 'Cuántas casillas tendrá el tablero de ancho?\nEl número mínimo es 4\nEl número máximo es 10', totalFilas );
+	yRand = prompt( 'Cuántas casillas tendrá el tablero de ancho?\nEl número mínimo es 5\nEl número máximo es 20', totalColumnas );
+	if ( yRand == null ) { xRand = totalColumnas; }
+	if ( yRand > 20 ) { yRand = 20; } else if ( yRand < 5 ) { yRand = 5; }
+	xRand = prompt( 'Cuántas casillas tendrá el tablero de alto?\nEl número mínimo es 5\nEl número máximo es 10', totalFilas );
 	if ( xRand == null ) { xRand = totalFilas; }
 	if ( xRand > 10 ) { xRand = 10; } else if ( xRand < 5 ) { xRand = 5; }
-	yRand = prompt( 'Cuántas casillas tendrá el tablero de alto?\nEl número mínimo es 4\nEl número máximo es 10', totalColumnas );
-	if ( yRand == null ) { xRand = totalColumnas; }
-	if ( yRand > 10 ) { yRand = 10; } else if ( yRand < 5 ) { yRand = 5; }
 	var maximoBombas = ( xRand * yRand ) - Math.floor( ( xRand * yRand ) / 4 );
 	totalFilas = xRand;
 	totalColumnas = yRand;

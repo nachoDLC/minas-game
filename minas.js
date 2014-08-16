@@ -4,6 +4,7 @@ var tablero = [];
 
 var bombas = 5;
 var totalFilas = totalColumnas = 5;
+var timeDelay = 400; //milisegundos
 
 function random ( min, max ) {
 	return Math.floor( Math.random() * ( max - min ) + min );
@@ -16,7 +17,7 @@ function asignartablero ( x, y ) {
 				tablero[x - 1][y - 1]++;
 			}
 		}
-		
+
 			if ( tablero[x - 1][y] != 'mina' ) {
 				tablero[x - 1][y]++;
 			}
@@ -46,7 +47,7 @@ function asignartablero ( x, y ) {
 				tablero[x + 1][y - 1]++;
 			}
 		}
-		
+
 			if ( tablero[x + 1][y] != 'mina' ) {
 				tablero[x + 1][y]++;
 			}
@@ -88,9 +89,8 @@ function agregaBombas () {
 
 function dibujaMatriz () {
 	totalCasillas = totalFilas * totalColumnas;
-	casillasDestapadas = 0;
 	imprimeMarcas.innerHTML = bombas;
-	document.getElementById( 'tablero' ).innerHTML = '';
+
 	for ( var x = 0; x < totalFilas; x++ ) {
 		tablero[x] = tablero[x] = [];
 		var div = document.createElement( 'div' );
@@ -122,7 +122,7 @@ function marcas (e) {
 			casilla.classList.add('mark');
 			imprimeMarcas.innerHTML = Number(imprimeMarcas.innerHTML) - 1;
 		}
-	}, 500 );
+	}, timeDelay );
 }
 function verificaCasilla (e) {
 	window.clearTimeout(delay);
@@ -138,7 +138,9 @@ function destapaCasilla (x, y) {
 	x = Number(x);
 	y = Number(y);
 	var casilla = document.getElementById('cell' + x + y);
-	casilla.addEventListener('click', marcas, false);
+	// console.log(casilla);
+	casilla.removeEventListener('click', marcas, false);
+	casilla.removeEventListener('dblclick', verificaCasilla, false);
 	if ( !casilla.classList.contains('destapado') ) {
 		casillasDestapadas++;
 	}
@@ -147,50 +149,50 @@ function destapaCasilla (x, y) {
 		if ( tablero[x][y] == 0 ) {
 				if ( x - 1 > -1 ) {
 					if ( y - 1 > -1 ) {
-						if ( tablero[x - 1][y - 1] != 'mina' 
+						if ( tablero[x - 1][y - 1] != 'mina'
 							&& !document.getElementById('cell' + (x - 1) + (y - 1)).classList.contains('mark') ) {
 								destapaCasilla(x - 1, y - 1);
 						}
 					}
-						if ( tablero[x - 1][y] != 'mina' 
+						if ( tablero[x - 1][y] != 'mina'
 							&& !document.getElementById('cell' + (x - 1) + (y)).classList.contains('mark') ) {
 								destapaCasilla(x - 1, y);
 						}
 					if ( y + 1 < totalColumnas ) {
-						if ( tablero[x - 1][y + 1] != 'mina' 
+						if ( tablero[x - 1][y + 1] != 'mina'
 							&& !document.getElementById('cell' + (x - 1) + (y + 1)).classList.contains('mark') ) {
 								destapaCasilla(x - 1, y + 1);
 						}
 					}
 				}
 				if ( y - 1 > -1 ) {
-					if ( tablero[x][y - 1] != 'mina' 
+					if ( tablero[x][y - 1] != 'mina'
 						&& !document.getElementById('cell' + (x) + (y - 1)).classList.contains('mark') ) {
 							destapaCasilla(x, y - 1);
 					}
 				}
-				if ( y + 1 < totalColumnas 
-					&& !document.getElementById('cell' + x + (y + 1)).classList.contains('destapado') 
+				if ( y + 1 < totalColumnas
+					&& !document.getElementById('cell' + x + (y + 1)).classList.contains('destapado')
 					&& !document.getElementById('cell' + x + (y + 1)).classList.contains('mark') ){
 						if ( tablero[x][y + 1] != 'mina' ) {
 							destapaCasilla(x, y + 1);
 						}
 				}
 				if ( x + 1 < totalFilas ) {
-					if ( y - 1 > -1 
-						&& !document.getElementById('cell' + (x + 1) + (y - 1)).classList.contains('destapado') 
+					if ( y - 1 > -1
+						&& !document.getElementById('cell' + (x + 1) + (y - 1)).classList.contains('destapado')
 						&& !document.getElementById('cell' + (x + 1) + (y - 1)).classList.contains('mark') ){
 							if ( tablero[x + 1][y - 1] != 'mina' ) {
 								destapaCasilla(x + 1, y - 1);
 							}
 					}
-						if ( tablero[x + 1][y] != 'mina' 
-							&& !document.getElementById('cell' + (x + 1) + (y)).classList.contains('destapado') 
+						if ( tablero[x + 1][y] != 'mina'
+							&& !document.getElementById('cell' + (x + 1) + (y)).classList.contains('destapado')
 							&& !document.getElementById('cell' + (x + 1) + (y)).classList.contains('mark') ) {
 								destapaCasilla(x + 1, y);
 						}
-					if ( y + 1 < totalColumnas 
-						&& !document.getElementById('cell' + (x + 1) + (y + 1)).classList.contains('destapado') 
+					if ( y + 1 < totalColumnas
+						&& !document.getElementById('cell' + (x + 1) + (y + 1)).classList.contains('destapado')
 						&& !document.getElementById('cell' + (x + 1) + (y + 1)).classList.contains('mark') ){
 							if ( tablero[x + 1][y + 1] != 'mina' ) {
 								destapaCasilla(x + 1, y + 1);
@@ -202,27 +204,28 @@ function destapaCasilla (x, y) {
 		}
 
 		if( casillasDestapadas == totalCasillas - bombas ) {
-			muestraMinas();
-			document.getElementById('mensaje').innerHTML = 'Ganaste!!';
-			document.getElementById('jugar').classList.remove('oculto');
-			document.getElementById('jugar').addEventListener('click', iniciaJuego, false);
+			terminaJuego( 'Ganaste!!' );
 		}
 	}else{
 		// document.getElementById('cell' + x + y).innerHTML = 'X';
 		document.getElementById( 'cell' + x + y ).classList.add('explosion');
-		muestraMinas();
-		document.getElementById('mensaje').innerHTML = 'Ya perdiste :(';
-		document.getElementById('jugar').classList.remove('oculto');
-		document.getElementById('jugar').addEventListener('click', iniciaJuego, false);
+		terminaJuego( 'Ya perdiste :(' );
 	}
+}
+
+function terminaJuego (msg) {
+	muestraMinas();
+	document.getElementById('mensaje').innerHTML = msg;
+	document.getElementById('jugar').classList.remove('oculto');
+	document.getElementById('jugar').addEventListener('click', iniciaJuego, false);
 }
 
 function muestraMinas () {
 	for (var x = 0; x < totalFilas; x++) {
 		for (var y = 0; y < totalColumnas; y++) {
 			var div = document.getElementById( 'cell' + x + y );
-			div.addEventListener('click', marcas, false);
-			div.addEventListener('dblclick', verificaCasilla, false);
+			div.removeEventListener('click', marcas, false);
+			div.removeEventListener('dblclick', verificaCasilla, false);
 
 			if ( tablero[x][y] == 'mina' ) {
 				if ( !div.classList.contains('explosion') ) {
@@ -234,18 +237,27 @@ function muestraMinas () {
 }
 
 function recopilaDatos () {
+	document.getElementById('mensaje').innerHTML = '';
+	delay, totalCasillas, casillasDestapadas = 0;
+
 	xRand = prompt( 'Cuántas casillas tendrá el tablero de ancho?\nEl número mínimo es 4\nEl número máximo es 10', totalFilas );
+	if ( xRand == null ) { xRand = totalFilas; }
+	if ( xRand > 10 ) { xRand = 10; } else if ( xRand < 5 ) { xRand = 5; }
 	yRand = prompt( 'Cuántas casillas tendrá el tablero de alto?\nEl número mínimo es 4\nEl número máximo es 10', totalColumnas );
+	if ( yRand == null ) { xRand = totalColumnas; }
+	if ( yRand > 10 ) { yRand = 10; } else if ( yRand < 5 ) { yRand = 5; }
 	var maximoBombas = ( xRand * yRand ) - Math.floor( ( xRand * yRand ) / 4 );
 	totalFilas = xRand;
 	totalColumnas = yRand;
 	bombas = prompt('Con cuántas minas quieres jugar?\nEntre más minas más dificil será\nNo pueden ser más de ' + maximoBombas, bombas );
+	if ( bombas == null ) { xRand = bombas; }
 }
 
 function iniciaJuego(){
 	document.getElementById('jugar').removeEventListener('clicl', iniciaJuego, false);
 	document.getElementById('jugar').classList.add('oculto');
-	
+	document.getElementById( 'tablero' ).innerHTML = '';
+
 	recopilaDatos();
 	dibujaMatriz();
 	agregaBombas();
